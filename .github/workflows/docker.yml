@@ -51,6 +51,8 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           pull: false
+          build-args: |
+            CDN_URL=http://static.localhost:3000
 
       - name: Docker meta
         id: meta
@@ -77,6 +79,7 @@ jobs:
           pull: false
           build-args: |
             BASE_IMAGE=${{ env.BASE_IMAGE_NAME }}@${{ steps.base_build.outputs.digest }}
+            CDN_URL=http://static.localhost:3000
 
       - name: Export digest
         run: |
@@ -131,6 +134,8 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           pull: false
+          build-args: |
+            CDN_URL=http://static.localhost:3000
 
       - name: Docker meta
         id: meta
@@ -157,6 +162,7 @@ jobs:
           pull: false
           build-args: |
             BASE_IMAGE=${{ env.BASE_IMAGE_NAME }}@${{ steps.base_build.outputs.digest }}
+            CDN_URL=http://static.localhost:3000
 
       - name: Export digest
         run: |
