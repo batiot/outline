@@ -4,14 +4,16 @@ on:
   push:
     tags:
       - "v*"
+    branches:
+      - universe
 
 env:
-  IMAGE_NAME: outlinewiki/outline
-  BASE_IMAGE_NAME: outlinewiki/outline-base
+  IMAGE_NAME: ghcr.io/batiot/outline
+  BASE_IMAGE_NAME: ghcr.io/batiot/outline-base
 
 jobs:
   build-arm:
-    runs-on: ubicloud-standard-8-arm
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -29,11 +31,12 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
 
-      - name: Login to Docker Hub
+      - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push base image
         id: base_build
@@ -90,7 +93,7 @@ jobs:
           retention-days: 1
 
   build-amd:
-    runs-on: ubicloud-standard-8
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -108,11 +111,12 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
 
-      - name: Login to Docker Hub
+      - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push base image
         id: base_build
@@ -169,7 +173,7 @@ jobs:
           retention-days: 1
 
   merge:
-    runs-on: ubicloud-standard-8
+    runs-on: ubuntu-latest
     needs:
       - build-amd
       - build-arm
@@ -181,11 +185,12 @@ jobs:
           pattern: digests-*
           merge-multiple: true
 
-      - name: Login to Docker Hub
+      - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
