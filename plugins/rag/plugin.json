@@ -1,0 +1,6 @@
+{
+    "id": "rag",
+    "name": "RAG Search",
+    "priority": 500,
+    "description": "Adds semantic search via RAG (Retrieval Augmented Generation)"
+}

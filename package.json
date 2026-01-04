@@ -192,6 +192,7 @@
     "patch-package": "^8.0.1",
     "pg": "^8.16.3",
     "pg-tsquery": "^8.4.2",
+    "pgvector": "^0.2.1",
     "pluralize": "^8.0.0",
     "png-chunks-extract": "^1.0.0",
     "polished": "^4.3.1",
