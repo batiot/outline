@@ -18,6 +18,7 @@ import { InputSelectPermission } from "~/components/InputSelectPermission";
 import { createLazyComponent } from "~/components/LazyLoad";
 import Switch from "~/components/Switch";
 import Text from "~/components/Text";
+import { InputSelect } from "~/components/InputSelect";
 import useBoolean from "~/hooks/useBoolean";
 import useCurrentTeam from "~/hooks/useCurrentTeam";
 import useStores from "~/hooks/useStores";
@@ -33,6 +34,7 @@ export interface FormData {
   sharing: boolean;
   permission: CollectionPermission | undefined;
   commenting?: boolean | null;
+  universeId?: string;
 }
 
 const useIconColor = (collection?: Collection) => {
@@ -63,6 +65,7 @@ export const CollectionForm = observer(function CollectionForm_({
   collection?: Collection;
 }) {
   const team = useCurrentTeam();
+  const { universes, ui } = useStores();
   const { t } = useTranslation();
 
   const [hasOpenedIconPicker, setHasOpenedIconPicker] = useBoolean(false);
@@ -93,10 +96,21 @@ export const CollectionForm = observer(function CollectionForm_({
       permission: collection?.permission,
       commenting: collection?.commenting ?? true,
       color: iconColor,
+      universeId: collection?.universeId ?? ui.currentUniverseId,
     },
   });
 
   const values = watch();
+
+  const universeOptions = useMemo(
+    () =>
+      universes.sorted.map((u) => ({
+        type: "item" as const,
+        label: u.name,
+        value: u.id,
+      })),
+    [universes.sorted]
+  );
 
   // Preload the IconPicker component on mount
   useEffect(() => {
@@ -110,8 +124,8 @@ export const CollectionForm = observer(function CollectionForm_({
       setValue(
         "icon",
         IconLibrary.findIconByKeyword(values.name) ??
-          values.icon ??
-          "collection"
+        values.icon ??
+        "collection"
       );
     }
   }, [collection, hasOpenedIconPicker, setValue, values.name, values.icon]);
@@ -166,6 +180,22 @@ export const CollectionForm = observer(function CollectionForm_({
           flex
         />
       </HStack>
+
+      {universeOptions.length > 1 && (
+        <Controller
+          name="universeId"
+          control={control}
+          render={({ field }) => (
+            <InputSelect
+              label={t("Universe")}
+              options={universeOptions}
+              value={field.value ?? ""}
+              onChange={field.onChange}
+              help={t("Associate this collection with a universe.")}
+            />
+          )}
+        />
+      )}
 
       {/* Following controls are available in create flow, but moved elsewhere for edit */}
       {!collection && (

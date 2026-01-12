@@ -27,6 +27,11 @@ export default class Collection extends ParanoidModel {
   @observable
   name: string;
 
+  /** The ID of the universe the collection belongs to. */
+  @Field
+  @observable
+  universeId: string | undefined;
+
   /** Collection description in Prosemirror format. */
   @Field
   @observable.shallow

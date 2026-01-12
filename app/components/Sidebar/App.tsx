@@ -19,6 +19,7 @@ import Tooltip from "../Tooltip";
 import Sidebar from "./Sidebar";
 import ArchiveLink from "./components/ArchiveLink";
 import Collections from "./components/Collections";
+import UniverseSelector from "./components/UniverseSelector";
 import { DraftsLink } from "./components/DraftsLink";
 import DragPlaceholder from "./components/DragPlaceholder";
 import HistoryNavigation from "./components/HistoryNavigation";
@@ -33,18 +34,19 @@ import TrashLink from "./components/TrashLink";
 
 function AppSidebar() {
   const { t } = useTranslation();
-  const { documents, ui, collections } = useStores();
+  const { documents, ui, collections, universes } = useStores();
   const team = useCurrentTeam();
   const user = useCurrentUser();
   const can = usePolicy(team);
 
   useEffect(() => {
+    void universes.fetchAll();
     void collections.fetchAll();
 
     if (!user.isViewer) {
       void documents.fetchDrafts();
     }
-  }, [documents, collections, user.isViewer]);
+  }, [documents, collections, universes, user.isViewer]);
 
   const [dndArea, setDndArea] = useState();
   const handleSidebarRef = useCallback((node) => setDndArea(node), []);
@@ -94,6 +96,7 @@ function AppSidebar() {
               </Tooltip>
             </SidebarButton>
           </TeamMenu>
+          <UniverseSelector />
           <Overflow>
             <Section>
               <SidebarLink

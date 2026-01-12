@@ -40,12 +40,19 @@ export default class CollectionsStore extends Store<Collection> {
   @computed
   get orderedData(): Collection[] {
     let collections = Array.from(this.data.values());
+    const { currentUniverseId } = this.rootStore.ui;
+
     collections = collections
       .filter((collection) => !collection.deletedAt)
       .filter((collection) => {
         const can = this.rootStore.policies.abilities(collection.id);
         return isEmpty(can) || can.readDocument;
       });
+
+    if (currentUniverseId) {
+      collections = collections.filter((c) => c.universeId === currentUniverseId);
+    }
+
     return collections.sort((a, b) => {
       if (a.index === b.index) {
         return a.updatedAt > b.updatedAt ? -1 : 1;

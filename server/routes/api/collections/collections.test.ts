@@ -1,5 +1,5 @@
 import { CollectionPermission, CollectionStatusFilter } from "@shared/types";
-import { Document, UserMembership, GroupMembership } from "@server/models";
+import { Document, UserMembership, GroupMembership, Universe } from "@server/models";
 import {
   buildUser,
   buildAdmin,
@@ -7,6 +7,7 @@ import {
   buildCollection,
   buildDocument,
   buildTeam,
+  buildUniverse,
 } from "@server/test/factories";
 import { getTestServer } from "@server/test/support";
 
@@ -38,6 +39,31 @@ describe("#collections.list", () => {
     expect(body.data[0].id).toEqual(collection.id);
     expect(body.policies.length).toEqual(1);
     expect(body.policies[0].abilities.read).toBeTruthy();
+  });
+
+  it("should filter by universeId", async () => {
+    const team = await buildTeam();
+    const user = await buildUser({ teamId: team.id });
+    const universe = await buildUniverse({ teamId: team.id });
+    const collection1 = await buildCollection({
+      userId: user.id,
+      teamId: team.id,
+      universeId: universe.id,
+    });
+    await buildCollection({
+      userId: user.id,
+      teamId: team.id,
+    });
+    const res = await server.post("/api/collections.list", {
+      body: {
+        token: user.getJwtToken(),
+        universeId: universe.id,
+      },
+    });
+    const body = await res.json();
+    expect(res.status).toEqual(200);
+    expect(body.data.length).toEqual(1);
+    expect(body.data[0].id).toEqual(collection1.id);
   });
 
   it("should include archived collections", async () => {
@@ -1329,6 +1355,23 @@ describe("#collections.create", () => {
     expect(body.data.sort.direction).toBe("asc");
     expect(body.policies.length).toBe(1);
     expect(body.policies[0].abilities.read).toBeTruthy();
+  });
+
+  it("should create collection with universeId", async () => {
+    const team = await buildTeam();
+    const user = await buildUser({ teamId: team.id });
+    const universe = await buildUniverse({ teamId: team.id });
+    const res = await server.post("/api/collections.create", {
+      body: {
+        token: user.getJwtToken(),
+        name: "Test",
+        universeId: universe.id,
+      },
+    });
+    const body = await res.json();
+    expect(res.status).toEqual(200);
+    expect(body.data.id).toBeTruthy();
+    expect(body.data.universeId).toBe(universe.id);
   });
 
   it("should error when index is invalid", async () => {

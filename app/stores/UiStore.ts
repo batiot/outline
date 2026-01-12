@@ -32,6 +32,7 @@ type PersistedData = Pick<
   | "sidebarRightWidth"
   | "sidebarCollapsed"
   | "tocVisible"
+  | "currentUniverseId"
 >;
 
 class UiStore {
@@ -42,6 +43,9 @@ class UiStore {
   // theme represents the users UI preference (defaults to system)
   @observable
   theme: Theme;
+
+  @observable
+  currentUniverseId: string | undefined;
 
   // systemTheme represents the system UI theme (Settings -> General in macOS)
   @observable
@@ -98,6 +102,7 @@ class UiStore {
     const data: PersistedData = Storage.get(UI_STORE) || {};
     this.languagePromptDismissed = data.languagePromptDismissed;
     this.sidebarCollapsed = !!data.sidebarCollapsed;
+    this.currentUniverseId = data.currentUniverseId;
     this.sidebarWidth = data.sidebarWidth || defaultTheme.sidebarWidth;
     this.sidebarRightWidth =
       data.sidebarRightWidth || defaultTheme.sidebarRightWidth;
@@ -148,6 +153,12 @@ class UiStore {
         this.persist();
       });
     });
+  };
+
+  @action
+  setCurrentUniverseId = (universeId: string | undefined): void => {
+    this.currentUniverseId = universeId;
+    this.persist();
   };
 
   @action
@@ -293,6 +304,7 @@ class UiStore {
       languagePromptDismissed: this.languagePromptDismissed,
       commentsExpanded: this.commentsExpanded,
       theme: this.theme,
+      currentUniverseId: this.currentUniverseId,
     };
   }
 

@@ -14,11 +14,14 @@ type Props = {
 export const CollectionNew = observer(function CollectionNew_({
   onSubmit,
 }: Props) {
-  const { collections } = useStores();
+  const { collections, ui } = useStores();
   const handleSubmit = useCallback(
     async (data: FormData) => {
       try {
-        const collection = await collections.save(data);
+        const collection = await collections.save({
+          ...data,
+          universeId: ui.currentUniverseId,
+        });
         // Avoid flash of loading state for the new collection, we know it's empty.
         runInAction(() => {
           collection.documents = [];

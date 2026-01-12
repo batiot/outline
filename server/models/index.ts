@@ -52,6 +52,8 @@ export { default as Share } from "./Share";
 
 export { default as Star } from "./Star";
 
+export { default as Universe } from "./Universe";
+
 export { default as Team } from "./Team";
 
 export { default as TeamDomain } from "./TeamDomain";

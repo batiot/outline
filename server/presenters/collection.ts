@@ -27,15 +27,15 @@ export default async function presentCollection(
     name: collection.name,
     data: asData
       ? await DocumentHelper.toJSON(
-          collection,
-          options.isPublic
-            ? {
-                signedUrls: Hour.seconds,
-                teamId: collection.teamId,
-                internalUrlBase: `/s/${options.shareId}`,
-              }
-            : undefined
-        )
+        collection,
+        options.isPublic
+          ? {
+            signedUrls: Hour.seconds,
+            teamId: collection.teamId,
+            internalUrlBase: `/s/${options.shareId}`,
+          }
+          : undefined
+      )
       : undefined,
     description: asData ? undefined : collection.description,
     sort: collection.sort,
@@ -45,6 +45,7 @@ export default async function presentCollection(
     permission: collection.permission,
     commenting: collection.commenting,
     sharing: collection.sharing,
+    universeId: collection.universeId,
     createdAt: collection.createdAt,
     updatedAt: collection.updatedAt,
     deletedAt: collection.deletedAt,
@@ -61,10 +62,10 @@ export default async function presentCollection(
       collection.archivedBy && presentUser(collection.archivedBy);
     res.sourceMetadata = collection.sourceMetadata
       ? {
-          externalId: collection.sourceMetadata.externalId,
-          externalName: collection.sourceMetadata.externalName,
-          createdByName: collection.sourceMetadata.createdByName,
-        }
+        externalId: collection.sourceMetadata.externalId,
+        externalName: collection.sourceMetadata.externalName,
+        createdByName: collection.sourceMetadata.createdByName,
+      }
       : undefined;
   }
 

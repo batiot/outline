@@ -30,6 +30,7 @@ import StarsStore from "./StarsStore";
 import SubscriptionsStore from "./SubscriptionsStore";
 import UiStore from "./UiStore";
 import UnfurlsStore from "./UnfurlsStore";
+import UniversesStore from "./UniversesStore";
 import UserMembershipsStore from "./UserMembershipsStore";
 import UsersStore from "./UsersStore";
 import ViewsStore from "./ViewsStore";
@@ -63,6 +64,7 @@ export default class RootStore {
   shares: SharesStore;
   ui: UiStore;
   unfurls: UnfurlsStore;
+  universes: UniversesStore;
   stars: StarsStore;
   subscriptions: SubscriptionsStore;
   users: UsersStore;
@@ -97,6 +99,7 @@ export default class RootStore {
     this.registerStore(StarsStore);
     this.registerStore(SubscriptionsStore);
     this.registerStore(UnfurlsStore);
+    this.registerStore(UniversesStore);
     this.registerStore(UsersStore);
     this.registerStore(ViewsStore);
     this.registerStore(FileOperationsStore);

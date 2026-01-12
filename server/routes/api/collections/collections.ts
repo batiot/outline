@@ -65,6 +65,7 @@ router.post(
       sort,
       index,
       commenting,
+      universeId,
     } = ctx.input.body;
 
     const { user } = ctx.state.auth;
@@ -83,6 +84,7 @@ router.post(
       sort,
       index,
       commenting,
+      universeId,
     });
 
     if (data) {
@@ -586,6 +588,7 @@ router.post(
       sort,
       sharing,
       commenting,
+      universeId,
     } = ctx.input.body;
 
     const { user } = ctx.state.auth;
@@ -670,6 +673,10 @@ router.post(
       collection.commenting = commenting;
     }
 
+    if (universeId !== undefined) {
+      collection.universeId = universeId;
+    }
+
     await collection.saveWithCtx(ctx);
 
     // must reload to update collection membership for correct policy calculation
@@ -707,7 +714,7 @@ router.post(
   pagination(),
   transaction(),
   async (ctx: APIContext<T.CollectionsListReq>) => {
-    const { includeListOnly, query, statusFilter } = ctx.input.body;
+    const { includeListOnly, query, statusFilter, universeId } = ctx.input.body;
     const { user } = ctx.state.auth;
     const { transaction } = ctx.state;
     const collectionIds = await user.collectionIds({ transaction });
@@ -724,6 +731,10 @@ router.post(
         },
       ],
     };
+
+    if (universeId) {
+      where[Op.and].push({ universeId });
+    }
 
     if (!statusFilter) {
       where[Op.and].push({ archivedAt: { [Op.eq]: null } });
@@ -760,14 +771,14 @@ router.post(
       Collection.scope(
         statusFilter?.includes(CollectionStatusFilter.Archived)
           ? [
-              {
-                method: ["withMembership", user.id],
-              },
-              "withArchivedBy",
-            ]
-          : {
+            {
               method: ["withMembership", user.id],
-            }
+            },
+            "withArchivedBy",
+          ]
+          : {
+            method: ["withMembership", user.id],
+          }
       ).findAll({
         where,
         replacements,

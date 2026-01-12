@@ -41,6 +41,7 @@ import {
   Subscription,
   Notification,
   SearchQuery,
+  Universe,
   Pin,
   Comment,
   Import,
@@ -216,11 +217,11 @@ export async function buildUser(overrides: Partial<User> = {}) {
       lastActiveAt: new Date("2018-01-03T00:00:00.000Z"),
       authentications: authenticationProvider
         ? [
-            {
-              authenticationProviderId: authenticationProvider.id,
-              providerId: randomString(32),
-            },
-          ]
+          {
+            authenticationProviderId: authenticationProvider.id,
+            providerId: randomString(32),
+          },
+        ]
         : [],
       ...overrides,
     } as Partial<InferCreationAttributes<User>>,
@@ -420,8 +421,8 @@ export async function buildDocument(
   if (overrides.collectionId && overrides.publishedAt !== null) {
     collection = collection
       ? await Collection.findByPk(overrides.collectionId, {
-          includeDocumentStructure: true,
-        })
+        includeDocumentStructure: true,
+      })
       : undefined;
 
     await collection?.addDocumentToStructure(document, 0);
@@ -807,8 +808,8 @@ export async function buildOAuthAuthentication({
   const oauthClient = oauthClientId
     ? await OAuthClient.findByPk(oauthClientId, { rejectOnEmpty: true })
     : await buildOAuthClient({
-        teamId: user.teamId,
-      });
+      teamId: user.teamId,
+    });
   const oauthInterfaceClient = {
     id: oauthClient.clientId,
     grants: ["authorization_code"],
@@ -891,6 +892,18 @@ export async function buildRelationship(overrides: Partial<Relationship> = {}) {
 
   return Relationship.create({
     type: RelationshipType.Backlink,
+    ...overrides,
+  });
+}
+
+export async function buildUniverse(overrides: Partial<Universe> = {}) {
+  if (!overrides.teamId) {
+    const team = await buildTeam();
+    overrides.teamId = team.id;
+  }
+
+  return Universe.create({
+    name: faker.lorem.words(2),
     ...overrides,
   });
 }

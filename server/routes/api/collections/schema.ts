@@ -44,6 +44,7 @@ export const CollectionsCreateSchema = BaseSchema.extend({
       })
       .optional(),
     commenting: z.boolean().nullish(),
+    universeId: zodIdType().optional(),
   }),
 });
 
@@ -176,6 +177,7 @@ export const CollectionsUpdateSchema = BaseSchema.extend({
       .optional(),
     sharing: z.boolean().optional(),
     commenting: z.boolean().nullish(),
+    universeId: zodIdType().optional(),
   }),
 });
 
@@ -189,6 +191,8 @@ export const CollectionsListSchema = BaseSchema.extend({
 
     /** Collection statuses to include in results */
     statusFilter: z.nativeEnum(CollectionStatusFilter).array().optional(),
+
+    universeId: zodIdType().optional(),
   }),
 });
 

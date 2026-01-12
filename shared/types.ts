@@ -187,52 +187,52 @@ export enum GroupPermission {
 
 export type IntegrationSettings<T> = T extends IntegrationType.Embed
   ? {
-      url?: string;
-      github?: {
-        installation: {
-          id: number;
-          account: { id: number; name: string; avatarUrl: string };
+    url?: string;
+    github?: {
+      installation: {
+        id: number;
+        account: { id: number; name: string; avatarUrl: string };
+      };
+    };
+    linear?: {
+      workspace: { id: string; name: string; key: string; logoUrl?: string };
+    };
+    diagrams?: {
+      url: string;
+    };
+  }
+  : T extends IntegrationType.Analytics
+  ? { measurementId: string; instanceUrl?: string; scriptName?: string }
+  : T extends IntegrationType.Post
+  ? { url: string; channel: string; channelId: string }
+  : T extends IntegrationType.Command
+  ? { serviceTeamId: string }
+  : T extends IntegrationType.Import
+  ? {
+    externalWorkspace: { id: string; name: string; iconUrl?: string };
+  }
+  :
+  | { url: string }
+  | {
+    github?: {
+      installation: {
+        id: number;
+        account: {
+          id?: number;
+          name: string;
+          avatarUrl?: string;
         };
       };
-      linear?: {
-        workspace: { id: string; name: string; key: string; logoUrl?: string };
-      };
-      diagrams?: {
-        url: string;
-      };
-    }
-  : T extends IntegrationType.Analytics
-    ? { measurementId: string; instanceUrl?: string; scriptName?: string }
-    : T extends IntegrationType.Post
-      ? { url: string; channel: string; channelId: string }
-      : T extends IntegrationType.Command
-        ? { serviceTeamId: string }
-        : T extends IntegrationType.Import
-          ? {
-              externalWorkspace: { id: string; name: string; iconUrl?: string };
-            }
-          :
-              | { url: string }
-              | {
-                  github?: {
-                    installation: {
-                      id: number;
-                      account: {
-                        id?: number;
-                        name: string;
-                        avatarUrl?: string;
-                      };
-                    };
-                  };
-                  diagrams?: {
-                    url: string;
-                  };
-                }
-              | { url: string; channel: string; channelId: string }
-              | { serviceTeamId: string }
-              | { measurementId: string }
-              | { slack: { serviceTeamId: string; serviceUserId: string } }
-              | undefined;
+    };
+    diagrams?: {
+      url: string;
+    };
+  }
+  | { url: string; channel: string; channelId: string }
+  | { serviceTeamId: string }
+  | { measurementId: string }
+  | { slack: { serviceTeamId: string; serviceUserId: string } }
+  | undefined;
 
 export enum UserPreference {
   /** Whether reopening the app should redirect to the last viewed document. */
@@ -357,6 +357,14 @@ export type NavigationNode = {
   depth?: number;
 };
 
+export type Universe = {
+  id: string;
+  name: string;
+  teamId: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type CollectionSort = {
   field: string;
   direction: "asc" | "desc";
@@ -398,32 +406,32 @@ export type NotificationData = {
 
 export type NotificationSettings = {
   [event in NotificationEventType]?:
-    | {
-        [type in NotificationChannelType]?: boolean;
-      }
-    | boolean;
+  | {
+    [type in NotificationChannelType]?: boolean;
+  }
+  | boolean;
 };
 
 export const NotificationEventDefaults: Record<NotificationEventType, boolean> =
-  {
-    [NotificationEventType.PublishDocument]: false,
-    [NotificationEventType.UpdateDocument]: true,
-    [NotificationEventType.CreateCollection]: false,
-    [NotificationEventType.CreateComment]: true,
-    [NotificationEventType.ResolveComment]: true,
-    [NotificationEventType.ReactionsCreate]: true,
-    [NotificationEventType.CreateRevision]: false,
-    [NotificationEventType.MentionedInDocument]: true,
-    [NotificationEventType.MentionedInComment]: true,
-    [NotificationEventType.GroupMentionedInDocument]: true,
-    [NotificationEventType.GroupMentionedInComment]: true,
-    [NotificationEventType.InviteAccepted]: true,
-    [NotificationEventType.Onboarding]: true,
-    [NotificationEventType.Features]: true,
-    [NotificationEventType.ExportCompleted]: true,
-    [NotificationEventType.AddUserToDocument]: true,
-    [NotificationEventType.AddUserToCollection]: true,
-  };
+{
+  [NotificationEventType.PublishDocument]: false,
+  [NotificationEventType.UpdateDocument]: true,
+  [NotificationEventType.CreateCollection]: false,
+  [NotificationEventType.CreateComment]: true,
+  [NotificationEventType.ResolveComment]: true,
+  [NotificationEventType.ReactionsCreate]: true,
+  [NotificationEventType.CreateRevision]: false,
+  [NotificationEventType.MentionedInDocument]: true,
+  [NotificationEventType.MentionedInComment]: true,
+  [NotificationEventType.GroupMentionedInDocument]: true,
+  [NotificationEventType.GroupMentionedInComment]: true,
+  [NotificationEventType.InviteAccepted]: true,
+  [NotificationEventType.Onboarding]: true,
+  [NotificationEventType.Features]: true,
+  [NotificationEventType.ExportCompleted]: true,
+  [NotificationEventType.AddUserToDocument]: true,
+  [NotificationEventType.AddUserToCollection]: true,
+};
 
 export enum UnfurlResourceType {
   URL = "url",

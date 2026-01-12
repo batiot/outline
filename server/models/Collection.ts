@@ -71,6 +71,7 @@ import GroupMembership from "./GroupMembership";
 import GroupUser from "./GroupUser";
 import Import from "./Import";
 import Team from "./Team";
+import Universe from "./Universe";
 import User from "./User";
 import UserMembership from "./UserMembership";
 import ParanoidModel from "./base/ParanoidModel";
@@ -542,6 +543,13 @@ class Collection extends ParanoidModel<
   @ForeignKey(() => Team)
   @Column(DataType.UUID)
   teamId: string;
+
+  @BelongsTo(() => Universe, "universeId")
+  universe: Universe | null;
+
+  @ForeignKey(() => Universe)
+  @Column(DataType.UUID)
+  universeId: string | null;
 
   static DEFAULT_SORT: { field: "title" | "index"; direction: "asc" | "desc" } =
     {
